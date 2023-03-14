@@ -1,3 +1,8 @@
+;input : THE QUICK BROWN FOX JUMPED. 
+;output: First capital = B 
+;        Last capital = X
+
+
 .MODEL SMALL
 .STACK 100H
 
@@ -6,9 +11,12 @@
     firstcapmsg DB "First capital = $"
     lastcapmsg DB "Last capital = $"
     nocapmsg DB "No Capitals. $"
-    str DB 100 DUP ?
+    
+    FIRST DB "["
+    LAST DB "@"
     
 .CODE
+
 MAIN PROC
     MOV AX,@DATA
     MOV DS,AX
@@ -26,76 +34,63 @@ MAIN PROC
         CMP AL,0DH
         JE END_INPUT
         
-        MOV str[SI],AL
-        INC SI
+        CMP AL,'A'
+        JGE LESS_Z
         
         JMP INPUT
+        
+        LESS_Z:
+            CMP AL,'Z'
+            JLE CHECK_F
+            JMP INPUT
+            
+            CHECK_F:
+                CMP AL,FIRST
+                JL F_UPDATE
+                JMP CHECK_L
+            CHECK_L:
+                CMP AL,LAST
+                JG L_UPDATE
+                JMP INPUT
+                
+            F_UPDATE:
+                MOV FIRST,AL
+                JMP CHECK_L
+            L_UPDATE:
+                MOV LAST,AL
+                JMP INPUT 
+            
         
     END_INPUT:
     
     CALL NEW_LINE
     
-    CHECH_FIRST_CAP:
-        CMP SI,DI
-        JE END_CHECH_FIRST_CAP
-        
-        CMP str[DI],'A'
-        JGE LESS_CZ
-        
-        INC DI
-        JMP CHECH_FIRST_CAP
-        
-        LESS_CZ:
-            CMP str[DI],'Z'
-            JLE PRINT_FIRST_CAP
-            
-            INC DI
-            JMP CHECH_FIRST_CAP
-       
-        PRINT_FIRST_CAP:
-            LEA DX,firstcapmsg
-            MOV AH,09H
-            INT 21H
-            
-            MOV DL,str[DI]
-            MOV AH,2
-            INT 21H
-            
-            CALL NEW_LINE
-            JMP CHECH_LAST_CAP 
-   
-    END_CHECH_FIRST_CAP:
+    CMP FIRST,'['
+    JE NO_CAP
     
-        DEC SI
-        
-    CHECH_LAST_CAP:
-          CMP SI,0
-          JL END_CHECH_LAST_CAP
-          
-          CMP str[SI],'A'
-          JGE LESS_SZ
-          
-          DEC SI
-          JMP CHECH_LAST_CAP
-          
-          LESS_SZ:
-            CMP str[SI],'Z'
-            JLE PRINT_LAST_CAP
+    ;printing first capital   
+    LEA DX,firstcapmsg
+    MOV AH,09H
+    INT 21H
             
-            DEC SI
-            JMP CHECH_LAST_CAP
-       
-        PRINT_LAST_CAP:
-            LEA DX,lastcapmsg
-            MOV AH,09H
-            INT 21H
+    MOV DL,FIRST
+    MOV AH,2
+    INT 21H
             
-            MOV DL,str[SI]
-            MOV AH,2
-            INT 21H
+    CALL NEW_LINE 
+    
+    ;printing last capital
+    LEA DX,lastcapmsg
+    MOV AH,09H
+    INT 21H
             
-            JMP EXIT 
-    END_CHECH_LAST_CAP:
+    MOV DL,LAST
+    MOV AH,2
+    INT 21H
+            
+    JMP EXIT 
+    
+    NO_CAP:
     
         LEA DX,nocapmsg
         MOV AH,09H
