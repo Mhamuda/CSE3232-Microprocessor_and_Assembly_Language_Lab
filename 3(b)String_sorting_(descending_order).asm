@@ -1,4 +1,4 @@
-;string sorting in ascending order 
+;string sorting in descending order 
 ;input: MHAMUDA
 ;output: UMMHDAA
 
