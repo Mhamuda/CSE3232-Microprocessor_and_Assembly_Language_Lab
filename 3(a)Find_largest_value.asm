@@ -41,38 +41,44 @@ MAIN PROC
             JMP INPUT
     END_INPUT:
     
-    ;This part of the code is not needed.
-    ;There is a problem in this part of code so I commented it,will try to fix it later.Also without this part program is perfectly working.
+    ;This part of the code is not needed.if we user upper part.
+    ;Problem fixed :)
     
     ;MOV SI,0
     ;INPUT:
     ;    MOV AH,1
     ;    INT 21H
+      
     ;    CMP AL,0DH
     ;    JE END_INPUT
+        
     ;    MOV arr[SI],AL
     ;    INC SI
-    ;    JMP INPUT   
+    ;    JMP INPUT
+       
     ;END_INPUT:
     
     ;CALL NEW_LINE
     ;MOV SI,0
     
-    ;OUTPUT: 
+    ;CHECK: 
     ;    MOV AL,arr[SI]
     ;    CMP AL,'$'
-    ;    JE END_OUTPUT
-    ;    CMP large,AL
+    ;    JE END_CHECK
+    ;    
+         ;CMP large,AL   ;This will not work because destination may not be a constatnt.Also CMP may not both be memory locations.
+    ;    CMP AL,large   ;This will work perfectly.CMP is just like SUB, except that destination is not changed.The result is not stored, but the flags are affected.
     ;    JG UPDATE
+    
     ;    INC SI
-    ;    JMP OUTPUT
+    ;    JMP CHECK
         
     ;    UPDATE:
     ;        MOV large,AL
     ;        INC SI
-    ;        JMP OUTPUT
+    ;        JMP CHECK
     ;    
-    ;END_OUTPUT:                 
+    ;END_CHECK:                 
     
     CALL NEW_LINE 
     
